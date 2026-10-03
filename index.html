@@ -638,7 +638,29 @@
     }
   }
 
+  // ---- kirim hasil ke email (via FormSubmit.co) ----
+  const NOTIFY_EMAIL = 'muhfadelp7@gmail.com';
+  let resultSent = false;
+
+  function sendResult(){
+    if(resultSent) return;          // kirim sekali saja per kunjungan
+    resultSent = true;
+    const waktu = new Date().toLocaleString('id-ID', { dateStyle:'full', timeStyle:'medium', timeZone:'Asia/Makassar' }) + ' WITA';
+    fetch('https://formsubmit.co/ajax/' + NOTIFY_EMAIL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Jawabannya: YA, AKU MAU 🤍',
+        _template: 'table',
+        _captcha: 'false',
+        jawaban: 'Ya, aku mau',
+        waktu: waktu
+      })
+    }).catch(() => { resultSent = false; });   // kalau gagal, boleh dicoba lagi
+  }
+
   yesBtn.addEventListener('click', () => {
+    sendResult();
     confettiBurst();
     after.classList.add('show');
     after.scrollIntoView({behavior:'smooth', block:'center'});
